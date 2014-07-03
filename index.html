@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <!-- Тег meta для указания кодировки -->
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="timerStile.css">
+  <script type="text/javascript">
+
+  // Функция запуска таймера
+  function startTimer(period) {
+    var spanMyTimer=document.getElementById("my_timer");
+
+    if (stopTimer) {
+      return
+    }
+    // Проверяем установлен ли
+    if (period != undefined) {
+      spanMyTimer.innerHTML = +period+1;
+      soundBeep();
+    }
+    var currentTime = +spanMyTimer.innerHTML;
+
+    // Провряем не кончилось ли время
+    if (currentTime != 0) {
+      currentTime--;
+      spanMyTimer.innerHTML = currentTime;      
+      // Время не кончилось опять вызывыаем себя
+      setTimeout(startTimer, 1000); 
+    } else {
+      soundBeep();
+      ++currentInterval;
+      init();
+      return // Время кончилось выходим из функции
+    } 
+  }
+
+  function setStopTimer() {
+    var spanMyTimer=document.getElementById("my_timer");
+    var stopTimerButton=document.getElementById("stopTimerButton");
+    stopTimer=true;
+    currentInterval=0;
+
+    spanMyTimer.style.fontSize = "1.3em";
+    spanMyTimer.style.color = "black";
+    spanMyTimer.innerHTML = "Таймер остановлен."
+
+    stopTimerButton.style.display="none"; 
+    return
+  }
+
+  function showError(message) {
+    var divError=document.getElementById('ErrorMessage');
+    divError.innerHTML= message;
+    divError.style.display="inline-block";
+    return
+  }
+
+  // Функция проверки число или нет
+  function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n)
+  }
+
+  // Функция проигрывания звука начала(конца) тренировки.)
+  function soundBeep() {
+    var audio = new Audio(); 
+    audio.src = 'Beep.mp3'; 
+    audio.autoplay = true; 
+  }
+
+  //Основная функция настраивающая и запускающая таймер
+  function init() {
+    var spanMyTimer=document.getElementById("my_timer");
+    var stopTimerButton=document.getElementById("stopTimerButton"); 
+
+    stopTimer=false;
+    stopTimerButton.style.display="inline-block";
+    spanMyTimer.style.fontSize = "2.0em";
+    
+    if ( currentInterval%2 == 0 ) {
+      spanMyTimer.style.color="green";
+    } else spanMyTimer.style.color="red";
+    if (timerIntervals[currentInterval]) {
+        var timerInterval = timerIntervals[currentInterval]
+        startTimer(timerInterval); 
+        return;
+    } 
+    spanMyTimer.style.color="black";
+    spanMyTimer.style.fontSize = "1.3em";
+    spanMyTimer.innerHTML="Тренировка закончена -поздравляю!";
+    stopTimerButton.style.display="none";
+
+    currentInterval=0;
+    return
+  }
+
+  //Функция проверки полей перед добавлением интервала
+  function checkFields() {
+    var divShowIntervals=document.getElementById('ShowIntervals');
+    var divError=document.getElementById('ErrorMessage');
+    var txtWorkInterval=document.getElementById('workInterval');
+    var txtRestInterval=document.getElementById('restInterval');
+
+    divError.style.display="none";
+
+    // Проверка введенных значений
+    if ( isNumeric(txtWorkInterval.value ) && isNumeric(txtRestInterval.value ) ) {
+      // Проверяем не слишком ли долго хочет человек занимастья
+      if ( +txtWorkInterval.value>300 ) {
+        var message = "Рабочий интервал больше 5-ти минут!?!?! Простите я не могу позволить Вам так долго заниматься Разбейте тренировку на несколько инткервалов с отдыхом.";
+        showError(message);
+        txtWorkInterval.value="";
+        return false;
+      // Проверяем не слишком ли долго хочет человек отдыхать
+      } else if ( +txtRestInterval.value>300 ) {
+        var message = "Слишкмо большой отдых. Больше 5-ти минут- куда это годиться? Уменьшите его и мы с Вами поладим.";
+        showError(message);
+        txtRestInterval.value="";
+        return false;
+      } else 
+        // все прошло успешно разрешаем добавить новый интервал
+        return true;      
+    } else {
+        var message = "Введены некорректные значения интервалов. Введите снова";
+        showError(message);
+        txtWorkInterval.value="";
+        txtRestInterval.value="";
+        return false
+    }
+  }
+  
+  //Функция добавления интервала
+  function addInterval() {
+    if (checkFields()) {
+      var txtWorkInterval=document.getElementById('workInterval');
+      var txtRestInterval=document.getElementById('restInterval');
+
+      timerIntervals.push(txtRestInterval.value);
+      timerIntervals.push(txtWorkInterval.value);
+      pasteIntervalInTable();
+      return
+    }
+    return
+  }
+
+  //
+  function pasteIntervalInTable() {
+    var tableOfIntervals=document.getElementById("tableOfIntervals");
+    var deleteIntervalsButton=document.getElementById("clearIntervalsButton");
+    var startTimerButton= document.getElementById("startTimerButton");
+
+    deleteAllIntervals();
+
+    // Заполняем строки таблицы снова
+    for (var i=0; i<timerIntervals.length; i++) {
+
+      var intervalRow=document.createElement("tr");
+      var intervalCell_1=document.createElement("td");
+      intervalCell_1.innerHTML=i+1;
+      intervalRow.appendChild(intervalCell_1);
+
+      var intervalCell_2=document.createElement("td");
+      intervalCell_2.innerHTML=timerIntervals[i];
+      intervalRow.appendChild(intervalCell_2);
+
+      var intervalCell_3=document.createElement("td");
+      intervalCell_3.innerHTML= ( i%2==0 ) ? "Отдых": "Работа";
+      intervalRow.appendChild(intervalCell_3);
+
+      tableOfIntervals.appendChild(intervalRow);
+    }
+    deleteIntervalsButton.style.display="inline-block";
+    startTimerButton.style.display="inline-block";
+    return
+  }
+
+  // Функция очистки таблицы интервалов и массива интервалов
+  function deleteAllIntervals(clearArray) {
+    var tableOfIntervals=document.getElementById("tableOfIntervals");
+    var deleteIntervalsButton=document.getElementById("clearIntervalsButton");
+    var startTimerButton= document.getElementById("startTimerButton");
+    var stopTimerButton=document.getElementById("stopTimerButton");
+    // Останавливаем таймер если он работет
+    setStopTimer();
+
+    //Получаем массив строк, которые нужно удалить
+    removedTr = tableOfIntervals.getElementsByTagName("tr")
+    //Удаляем строки попока не останеться только заголовок
+    for (var i=1; (removedTr[i]);) {
+      tableOfIntervals.removeChild(removedTr[i]);
+    }
+    // Скрфываем кнопку "Обнулить интервалы"
+    deleteIntervalsButton.style.display="none";
+    startTimerButton.style.display="none";
+    stopTimerButton.style.display="none";
+    // Если установлено true то обновляем и масиив, а не только таблицу
+    timerIntervals= (clearArray) ? [] : timerIntervals;
+    return
+  }
+</script>
+</head>
+<body>
+  <div class="block insertInterval"> 
+    <form>
+
+      <div class="textField">
+        <label for="workInterval"> Рабочий интервал (с.) </label>
+        <input type="text" id="workInterval" name="workInterval"> </input>
+      </div>
+
+      <div class="textField">
+        <label for="restInterval"> Интервал для отдыха (с.) </label>
+        <input type="text" id="restInterval" name="restInterval"> </input>
+      </div>
+
+    </form></br>
+
+    <div class="error" id="errorInTextField">
+      <span id="ErrorMessage"> 1111111 </span> 
+    </div>
+
+    <a class="button" href="#" onClick="addInterval()"> Добавить интервал таймера </a>
+
+  </div> 
+
+  <div class="block" id="showIntervals">
+
+    <table id="tableOfIntervals">
+      <tr>
+        <td> Номер интервала </td>
+        <td> Продолжительность (с.) </td>
+        <td> Режим </td>
+      </tr>
+    </table>
+
+    <a class="button" id="startTimerButton" href="#" onClick="init()"> Запустить таймер </a>
+    <a class="button" id="clearIntervalsButton" href="#" onClick="deleteAllIntervals(true)"> Обнулить интервалы </a>
+  </div>
+
+  <div class="block countDown">
+
+    <div class="timer">
+      <p><span id="my_timer" style=""> Заносите интревалы и вперед к отлиному самочувстию и фигуре.</span></p>
+      <a class="button" id="stopTimerButton" href="#" onClick="setStopTimer()"> Остановить таймер </a>
+    </div>
+  </div>  
+  <script type="text/javascript">
+  var timerIntervals=[]; // Массив для хранения интервалов таймера
+  var currentInterval = 0; //Порядковый номер вводимого интервала
+  var stopTimer = false; // переменная остановки таймера
+  </script>  
+</body>
+</html>

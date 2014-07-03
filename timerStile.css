@@ -1,0 +1,133 @@
+body {
+	padding:0;
+	margin:0 auto;
+	width:800px;
+}
+
+.block {
+	margin:10px;
+	margin-top:20px;
+	padding:20px;
+	border:1px solid black;
+	border-radius:20px;
+	background:white;
+	-webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+       -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+.insertInterval {
+	text-align: center;
+}
+
+#showIntervals {
+	min-height:100px;
+	text-align:center;
+}
+.textField {
+	display:inline-block;
+	margin-right:10px;
+}
+.countDown {
+	min-height:100px;
+}
+.countDown .timer {
+	margin:10px auto;
+	width:600px;
+	color: #f00; 
+	font-weight: bold;
+	text-align:center;
+}
+.insertInterval label:nth-child(2){
+	margin-left:10px;
+}
+.button {
+	display:inline-block;
+	padding:8px;
+	margin-top:10px;
+	text-decoration:none;
+	color: black;
+	background: 	#F0E68C;
+	border:3px solid #F0F8FF;
+	border-radius: 15px;
+}
+a.button:hover {
+	background: 	#FFD700;
+} 
+
+#clearIntervalsButton, #startTimerButton, #stopTimerButton {
+	display:none;
+	font-size: 1.3em;
+}
+
+.error {
+	display:block;
+	min-width:100px;
+	padding:5px;
+	margin:5px auto;
+}
+
+.error span{
+	display:none;
+	padding:5px 10px 5px 10px;
+	border:1px solid red;
+	border-radius: 10px;
+	color:#DC143C;
+}
+
+#tableOfIntervals {
+	margin:0 auto;
+	border-collapse:collapse;
+	background:yellow;
+	font-size:1.5em;
+	
+}
+
+#tableOfIntervals tr {
+	background:#F0FFFF;
+}
+
+#tableOfIntervals tr:first-child{
+	font-weight:bold;
+}
+
+#tableOfIntervals tr:nth-child(2n){
+	background:white;
+}
+
+#tableOfIntervals td{
+	border-right:1px solid black;
+	border-bottom:1px solid black;
+	padding:10px;
+}
+
+#tableOfIntervals td:last-child{
+	border-right:none;
+}
+
+#tableOfIntervals tr td:last-child {
+	color:red;
+	font-weight:bold;
+}
+
+#tableOfIntervals tr:first-child td:last-child {
+	color:black;
+	font-weight:bold;
+}
+
+#tableOfIntervals tr:nth-child(2n) td:last-child {
+	color:green;
+	font-weight:bold;
+}
+
+#tableOfIntervals tr:last-child td {
+	border-bottom:none;
+}
+
+#tableOfIntervals tr:first-child td {
+	border-bottom:1px solid black;
+}
+
+#my_timer {
+	font-size: 1.3em;
+	color:black;
+}
